@@ -1,4 +1,6 @@
-const Categories = ({ categories, selectedCategory, onCategorySelect }) => {
+import { categories } from "../utils/constants";
+
+const Categories = ({ selectedCategory, onCategorySelect }) => {
 	return (
 		<div className="categories">
 			{categories.map((category) => (
@@ -9,7 +11,7 @@ const Categories = ({ categories, selectedCategory, onCategorySelect }) => {
 					}`}
 					onClick={() => onCategorySelect(category.id)}
 				>
-					{category.name}
+					{category.label}
 				</div>
 			))}
 		</div>

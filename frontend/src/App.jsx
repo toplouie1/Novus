@@ -88,7 +88,6 @@ function App() {
 				<div className="app">
 					<Nav onSearch={handleSearch} />
 					<Categories
-						categories={categories}
 						selectedCategory={state.selectedCategory}
 						onCategorySelect={(category) =>
 							setState((prev) => ({ ...prev, selectedCategory: category }))
