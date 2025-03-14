@@ -10,7 +10,7 @@ import NewsGrid from "./components/NewsGrid";
 import Loading from "./components/Loading";
 import ErrorMessage from "./components/ErrorMessage";
 import { getTopNews, getNewsByCategory, searchNews } from "./services/newsApi";
-import { categories } from "./utils/constants";
+import Sidebar from "./components/Sidebar";
 
 function App() {
 	const [state, setState] = useState({
@@ -93,32 +93,34 @@ function App() {
 							setState((prev) => ({ ...prev, selectedCategory: category }))
 						}
 					/>
-
-					<div className="news-container">
-						{state.error ? (
-							<ErrorMessage
-								message={state.error}
-								onRetry={() => fetchNews(true)}
-							/>
-						) : (
-							<>
-								{state.articles.length > 0 && (
-									<FeaturedArticle
-										article={state.articles[0]}
-										selectedCategory={state.selectedCategory}
-									/>
-								)}
-								{state.articles.length > 1 && (
-									<NewsGrid articles={state.articles.slice(1)} />
-								)}
-								{state.loading && <Loading />}
-								{!state.loading &&
-									!state.hasMore &&
-									state.articles.length > 0 && (
-										<div className="no-more">No more articles to load</div>
+					<div className="news-layout">
+						<main className="main-content">
+							{state.error ? (
+								<ErrorMessage
+									message={state.error}
+									onRetry={() => fetchNews(true)}
+								/>
+							) : (
+								<>
+									{state.articles.length > 0 && (
+										<FeaturedArticle
+											article={state.articles[0]}
+											selectedCategory={state.selectedCategory}
+										/>
 									)}
-							</>
-						)}
+									{state.articles.length > 1 && (
+										<NewsGrid articles={state.articles.slice(1)} />
+									)}
+									{state.loading && <Loading />}
+									{!state.loading &&
+										!state.hasMore &&
+										state.articles.length > 0 && (
+											<div className="no-more">No more articles to load</div>
+										)}
+								</>
+							)}
+						</main>
+						<Sidebar />
 					</div>
 				</div>
 			</BrowserRouter>
