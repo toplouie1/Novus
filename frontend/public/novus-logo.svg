@@ -1,0 +1,38 @@
+<svg width="140" height="40" viewBox="0 0 140 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a73e8"/>
+      <stop offset="100%" style="stop-color:#8ab4f8"/>
+    </linearGradient>
+  </defs>
+  <g class="logo-text">
+    <!-- N -->
+    <path d="M15 30V10L25 30V10" 
+          stroke="url(#gradient)" 
+          stroke-width="3" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"/>
+    <!-- O -->
+    <circle cx="50" cy="20" r="10" 
+            stroke="url(#gradient)" 
+            stroke-width="3"/>
+    <!-- V -->
+    <path d="M65 10L75 30L85 10" 
+          stroke="url(#gradient)" 
+          stroke-width="3" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"/>
+    <!-- U -->
+    <path d="M95 10V25C95 27.7614 97.2386 30 100 30V30C102.761 30 105 27.7614 105 25V10" 
+          stroke="url(#gradient)" 
+          stroke-width="3" 
+          stroke-linecap="round"/>
+    <!-- S -->
+    <path d="M115 13C115 11.3431 116.343 10 118 10H125C126.657 10 128 11.3431 128 13V13C128 14.6569 126.657 16 125 16H118C116.343 16 115 17.3431 115 19V27C115 28.6569 116.343 30 118 30H125C126.657 30 128 28.6569 128 27" 
+          stroke="url(#gradient)" 
+          stroke-width="3" 
+          stroke-linecap="round"/>
+  </g>
+  <!-- Dot accent -->
+  <circle cx="132" cy="10" r="3" fill="url(#gradient)"/>
+</svg> 

@@ -27,7 +27,7 @@ const Nav = ({ onSearch }) => {
 		<nav className="navbar">
 			<div className="nav-left">
 				<Link to="/" className="logo">
-					Novus
+					<img src="/novus-logo.svg" alt="Novus" className="logo-image" />
 				</Link>
 			</div>
 
