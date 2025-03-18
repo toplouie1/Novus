@@ -2,7 +2,7 @@
 
 ![Novus Logo](frontend/public/novus-logo.svg)
 
-Novus is a modern, AI-powered news aggregation platform that delivers personalized news experiences through advanced recommendation systems and semantic search capabilities.
+Novus is a modern, AI-powered news aggregation platform that delivers personalized news experiences through advanced recommendation systems and semantic search capabilities. Our platform gathers news from around the world while using our own insights and advanced search methods to give you a clearer, more engaging look at the stories that matter.
 
 ## Features
 

@@ -20,7 +20,6 @@ const cn = DATABASE_URL
 
 const db = pgp(cn);
 
-// Test database connection
 db.connect()
 	.then((obj) => {
 		console.log("Database connection successful");
