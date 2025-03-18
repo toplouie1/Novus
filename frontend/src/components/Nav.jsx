@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
+import AuthModal from "./Avatar";
 import "../css/Nav.css";
 
 const Nav = ({ onSearch }) => {
@@ -65,6 +66,7 @@ const Nav = ({ onSearch }) => {
 			</div>
 
 			<div className="nav-right">
+				<AuthModal />
 				<button className="theme-toggle" onClick={toggleTheme}>
 					{isDark ? (
 						<svg
