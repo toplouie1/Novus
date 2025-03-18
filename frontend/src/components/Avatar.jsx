@@ -8,6 +8,8 @@ import {
 	Tabs,
 	Tab,
 } from "@mui/material";
+import { SignUp } from "../auth/SignUp";
+import { logIn } from "../auth/Login";
 
 const AuthModal = () => {
 	const [open, setOpen] = useState(false);
@@ -33,11 +35,12 @@ const AuthModal = () => {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-
 		if (tabIndex === 0) {
-			console.log("Sign In data:", formData);
+			logIn(formData);
+			console.log("signed In");
 		} else {
-			console.log("Sign Up data:", formData);
+			SignUp(formData);
+			console.log("signed Up");
 		}
 		handleClose();
 	};
