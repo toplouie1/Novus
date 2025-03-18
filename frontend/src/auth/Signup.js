@@ -10,7 +10,7 @@ export const SignUp = (formData) => {
 		})
 		.catch((c) => {
 			if (c.response) {
-				setOpen(true);
+				console.log(c.response.data);
 			}
 		});
 };

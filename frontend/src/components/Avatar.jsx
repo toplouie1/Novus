@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
 	Avatar,
 	Modal,
@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { SignUp } from "../auth/SignUp";
 import { logIn } from "../auth/Login";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const AuthModal = () => {
 	const [open, setOpen] = useState(false);
@@ -19,9 +20,28 @@ const AuthModal = () => {
 		email: "",
 		password: "",
 	});
+	const [isLoggedIn, setIsLoggedIn] = useState(
+		!!localStorage.getItem("userId")
+	);
+
+	useEffect(() => {
+		const handleStorageChange = () => {
+			setIsLoggedIn(!!localStorage.getItem("userId"));
+		};
+
+		window.addEventListener("storage", handleStorageChange);
+		return () => {
+			window.removeEventListener("storage", handleStorageChange);
+		};
+	}, []);
 
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
+
+	const storedUserInfo = localStorage.getItem("userInfo");
+	const avatar = storedUserInfo
+		? JSON.parse(storedUserInfo)?.username[0]?.toUpperCase()
+		: "?";
 
 	const handleTabChange = (event, newValue) => setTabIndex(newValue);
 
@@ -37,6 +57,7 @@ const AuthModal = () => {
 		event.preventDefault();
 		if (tabIndex === 0) {
 			logIn(formData);
+			setIsLoggedIn(true);
 			console.log("signed In");
 		} else {
 			SignUp(formData);
@@ -45,20 +66,30 @@ const AuthModal = () => {
 		handleClose();
 	};
 
+	const handleLogout = () => {
+		localStorage.removeItem("userId");
+		localStorage.removeItem("userInfo");
+		window.location.reload();
+	};
+
 	return (
 		<>
-			<Avatar
-				onClick={handleOpen}
-				sx={{
-					cursor: "pointer",
-					color: "white",
-					backgroundColor: "#1976d2",
-					width: 30,
-					height: 30,
-				}}
-			>
-				?
-			</Avatar>
+			{isLoggedIn ? (
+				<LogoutIcon onClick={handleLogout} />
+			) : (
+				<Avatar
+					onClick={handleOpen}
+					sx={{
+						cursor: "pointer",
+						color: "white",
+						backgroundColor: "#1976d2",
+						width: 30,
+						height: 30,
+					}}
+				>
+					{isLoggedIn ? avatar : "?"}
+				</Avatar>
+			)}
 			<Modal open={open} onClose={handleClose}>
 				<Box
 					sx={{
