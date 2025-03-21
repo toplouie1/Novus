@@ -5,7 +5,7 @@ const {
 (async () => {
 	try {
 		console.log("Starting the article pipeline...");
-		await fetchEmbedAndStoreArticles("us", 20, 1);
+		await fetchEmbedAndStoreArticles("us", 30, 1);
 		console.log("Article pipeline completed successfully.");
 	} catch (error) {
 		console.error("Error running the article pipeline:", error.message);

@@ -33,7 +33,7 @@ CREATE TABLE articles (
     description TEXT,
     url TEXT UNIQUE NOT NULL,
     url_to_image TEXT,
-    embedding vector(1536),
+    embedding vector(768),
     published_at TIMESTAMP WITH TIME ZONE,
     content TEXT
 );
@@ -47,7 +47,7 @@ CREATE TABLE user_preferences (
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     preferred_categories TEXT[],
     preferred_sources TEXT[],
-    embedding vector(1536)
+    embedding vector(768)
 );
 
 \echo 'Adding sample data...'
