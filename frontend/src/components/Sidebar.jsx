@@ -13,30 +13,32 @@ const Sidebar = () => {
 	useEffect(() => {
 		const getLocationAndNews = async () => {
 			try {
-				const locationResponse = await fetch("https://ipapi.co/json/");
-				const locationData = await locationResponse.json();
-				setLocationInfo({
-					city: locationData.city,
-					region: locationData.region,
-					country: locationData.country_name,
-				});
+				let locationData = {
+					city: "New York",
+					region: "NY",
+					country: "United States",
+				};
 
-				const localSearchQuery = `${locationData.city} ${locationData.region} news`;
-				const localData = await searchNews(localSearchQuery, 1);
+				try {
+					const response = await fetch("https://ipapi.co/json/");
+					if (response.ok) {
+						const data = await response.json();
+						locationData = {
+							city: data.city || locationData.city,
+							region: data.region || locationData.region,
+							country: data.country_name || locationData.country,
+						};
+					}
+				} catch (error) {
+					console.warn("IP geolocation failed, using default location:", error);
+				}
 
-				const filteredNews = localData.articles.filter((article) => {
-					const content = (article.title + article.description).toLowerCase();
-					return (
-						content.includes(locationData.city.toLowerCase()) ||
-						content.includes(locationData.region.toLowerCase())
-					);
-				});
+				setLocationInfo(locationData);
 
-				setLocalNews(
-					filteredNews.length > 0
-						? filteredNews.slice(0, 3)
-						: localData.articles.slice(0, 3)
-				);
+				const localQuery = locationData.city;
+				const localData = await searchNews(localQuery, 4);
+
+				setLocalNews(localData.articles.slice(0, 4));
 
 				const [combatData, cryptoData, fashionData] = await Promise.all([
 					searchNews("UFC MMA boxing", 1),
@@ -60,8 +62,10 @@ const Sidebar = () => {
 	const renderNewsSection = (title, news, isLocal = false) => (
 		<div className="sidebar-section">
 			<h3 className="sidebar-title">
-				{isLocal && locationInfo
-					? `${locationInfo.city}, ${locationInfo.region} News`
+				{isLocal && locationInfo && locationInfo.city
+					? `${locationInfo.city}${
+							locationInfo.region ? `, ${locationInfo.region}` : ""
+					  } News`
 					: title}
 			</h3>
 			{loading ? (
