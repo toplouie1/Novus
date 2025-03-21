@@ -15,6 +15,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 const AuthModal = () => {
 	const [open, setOpen] = useState(false);
 	const [tabIndex, setTabIndex] = useState(0);
+	const [avatar, setAvatar] = useState("?");
 	const [formData, setFormData] = useState({
 		username: "",
 		email: "",
@@ -25,8 +26,42 @@ const AuthModal = () => {
 	);
 
 	useEffect(() => {
+		const userId = localStorage.getItem("userId");
+		setIsLoggedIn(!!userId);
+
+		const storedUserInfo = localStorage.getItem("userInfo");
+		if (storedUserInfo) {
+			try {
+				const userInfo = JSON.parse(storedUserInfo);
+				if (userInfo?.username) {
+					setAvatar(userInfo.username[0]?.toUpperCase() || "?");
+				}
+			} catch (error) {
+				console.error("Error parsing userInfo:", error);
+				setAvatar("?");
+			}
+		} else {
+			setAvatar("?");
+		}
+
 		const handleStorageChange = () => {
-			setIsLoggedIn(!!localStorage.getItem("userId"));
+			const newUserId = localStorage.getItem("userId");
+			setIsLoggedIn(!!newUserId);
+
+			const newUserInfo = localStorage.getItem("userInfo");
+			if (newUserInfo) {
+				try {
+					const userInfo = JSON.parse(newUserInfo);
+					if (userInfo?.username) {
+						setAvatar(userInfo.username[0]?.toUpperCase() || "?");
+					}
+				} catch (error) {
+					console.error("Error parsing userInfo:", error);
+					setAvatar("?");
+				}
+			} else {
+				setAvatar("?");
+			}
 		};
 
 		window.addEventListener("storage", handleStorageChange);
@@ -38,11 +73,6 @@ const AuthModal = () => {
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
 
-	const storedUserInfo = localStorage.getItem("userInfo");
-	const avatar = storedUserInfo
-		? JSON.parse(storedUserInfo)?.username[0]?.toUpperCase()
-		: "?";
-
 	const handleTabChange = (event, newValue) => setTabIndex(newValue);
 
 	const handleInputChange = (event) => {
@@ -53,15 +83,27 @@ const AuthModal = () => {
 		}));
 	};
 
-	const handleSubmit = (event) => {
+	const handleSubmit = async (event) => {
 		event.preventDefault();
 		if (tabIndex === 0) {
-			logIn(formData);
-			setIsLoggedIn(true);
-			console.log("signed In");
+			await logIn(formData);
+
+			const userId = localStorage.getItem("userId");
+			setIsLoggedIn(!!userId);
+
+			const storedUserInfo = localStorage.getItem("userInfo");
+			if (storedUserInfo) {
+				try {
+					const userInfo = JSON.parse(storedUserInfo);
+					if (userInfo?.username) {
+						setAvatar(userInfo.username[0]?.toUpperCase() || "?");
+					}
+				} catch (error) {
+					console.error("Error parsing userInfo:", error);
+				}
+			}
 		} else {
-			SignUp(formData);
-			console.log("signed Up");
+			await SignUp(formData);
 		}
 		handleClose();
 	};
@@ -69,7 +111,8 @@ const AuthModal = () => {
 	const handleLogout = () => {
 		localStorage.removeItem("userId");
 		localStorage.removeItem("userInfo");
-		window.location.reload();
+		setIsLoggedIn(false);
+		setAvatar("?");
 	};
 
 	return (
