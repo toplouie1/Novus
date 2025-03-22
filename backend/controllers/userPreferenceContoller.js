@@ -1,10 +1,10 @@
 const express = require("express");
-
 const {
 	getUserPreferences,
 	updateUserPreferences,
 	updateUserCategoriesAndEmbedding,
 } = require("../queries/userPreference.js");
+const { generateEmbedding } = require("../embedding/generateEmbedding.js");
 
 const userPreferences = express.Router();
 
@@ -33,7 +33,13 @@ userPreferences.get("/:userId", async (req, res) => {
 userPreferences.put("/:userId", async (req, res) => {
 	try {
 		const { userId } = req.params;
-		const { preferredCategories, preferredSources, embedding } = req.body;
+		const { preferredCategories, preferredSources } = req.body;
+
+		const combinedPreferences = [
+			...preferredCategories,
+			...preferredSources,
+		].join(" ");
+		const embedding = await generateEmbedding(combinedPreferences);
 
 		const updatedPreferences = await updateUserPreferences(
 			userId,
@@ -58,7 +64,8 @@ userPreferences.put("/:userId", async (req, res) => {
 userPreferences.patch("/:userId/categories", async (req, res) => {
 	try {
 		const { userId } = req.params;
-		const { preferredCategories, embedding } = req.body;
+		const { preferredCategories } = req.body;
+		const embedding = await generateEmbedding(preferredCategories.join(" "));
 
 		const updatedPreferences = await updateUserCategoriesAndEmbedding(
 			userId,

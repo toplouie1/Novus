@@ -1,5 +1,5 @@
 const { fetchArticles } = require("./FetchArticles.js");
-const { generateEmbedding } = require("./generateEmbedding.js");
+const { generateEmbedding } = require("../embedding/generateEmbedding.js");
 const { storeArticles } = require("../queries/articles.js");
 
 async function fetchEmbedAndStoreArticles(country, pageSize, page) {
