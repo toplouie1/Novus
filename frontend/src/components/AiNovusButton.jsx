@@ -1,7 +1,13 @@
 import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
+import { styled, keyframes } from "@mui/material/styles";
 import { useTheme } from "../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
+
+const gradientAnimation = keyframes`
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+`;
 
 const AiNovusButton = () => {
 	const { isDark } = useTheme();
@@ -12,15 +18,19 @@ const AiNovusButton = () => {
 		console.log("AiNovus button clicked");
 		try {
 			navigate("/aiNovus");
-			console.log("Navigation attempted to /personalized-news");
+			console.log("Navigation attempted to /aiNovus");
 		} catch (error) {
 			console.error("Navigation error:", error);
 		}
 	};
 
 	const StyledButton = styled(Button)(() => ({
-		backgroundColor: isDark ? "#2a2a2a" : "#f8f8f8",
-		color: isDark ? "#ffffff" : "#1e1e1e",
+		background: isDark
+			? "linear-gradient(45deg, #0d47a1, #311b92, #8e24aa, #6a1b9a)"
+			: "linear-gradient(45deg, #1565c0, #283593, #4527a0, #311b92)",
+		backgroundSize: "400% 400%",
+		animation: `${gradientAnimation} 15s ease infinite`,
+		color: "#ffffff",
 		padding: "8px 16px",
 		fontSize: "14px",
 		fontWeight: "bold",
@@ -30,10 +40,9 @@ const AiNovusButton = () => {
 			? "0 2px 8px rgba(0, 0, 0, 0.4)"
 			: "0 2px 8px rgba(0, 0, 0, 0.1)",
 		transition: "all 0.2s ease",
-		border: isDark ? "1px solid #3a86ff" : "1px solid #4361ee",
 
 		"&:hover": {
-			backgroundColor: isDark ? "#3a3a3a" : "#ffffff",
+			filter: "brightness(1.1)",
 			transform: "translateY(-2px)",
 			boxShadow: isDark
 				? "0 4px 12px rgba(0, 0, 0, 0.5)"

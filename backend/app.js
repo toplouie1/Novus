@@ -33,7 +33,7 @@ app.use(passport.session());
 
 app.use("/auth", authController);
 app.use("/users", usersController);
-app.use("/api/articles", articleRoutes);
+app.use("/articles", articleRoutes);
 
 app.get("/", (req, res) => {
 	res.send("Welcome To Novus");

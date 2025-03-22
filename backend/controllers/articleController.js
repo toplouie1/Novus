@@ -1,64 +1,42 @@
 const express = require("express");
-
-const { fetchArticles } = require("../news_feed/FetchArticles.js");
-const { storeArticles } = require("../queries/articles.js");
-const { generateEmbedding } = require("../news_feed/generateEmbedding.js");
+const { getAllArticles, getArticleById } = require("../queries/articles.js");
 
 const articles = express.Router();
 
 articles.get("/", async (req, res) => {
 	try {
-		await fetchEmbedAndStoreArticles(req, res);
+		const page = parseInt(req.query.page) || 1;
+		const limit = parseInt(req.query.limit) || 20;
+
+		const result = await getAllArticles(page, limit);
+		res.status(200).json(result);
 	} catch (error) {
-		console.error("Error in route handler:", error.message);
+		console.error("Error fetching articles:", error.message);
 		res
 			.status(500)
-			.json({ message: "Error processing request.", error: error.message });
+			.json({ message: "Error fetching articles", error: error.message });
 	}
 });
 
-async function fetchEmbedAndStoreArticles(req, res) {
-	const { country = "us", pageSize = 20, page = 1 } = req.query;
-
+articles.get("/:id", async (req, res) => {
 	try {
-		const { articles: fetchedArticles } = await fetchArticles(
-			page,
-			country,
-			pageSize
-		);
-		if (!fetchedArticles || fetchedArticles.length === 0) {
-			return res.status(404).json({ message: "No articles fetched." });
+		const { id } = req.params;
+		const article = await getArticleById(id);
+
+		if (!article) {
+			return res.status(404).json({ message: "Article not found" });
 		}
-		console.log(`Fetched ${fetchedArticles.length} articles.`);
-		const articlesToStore = fetchedArticles.map((article) => {
-			const embedding = generateEmbedding(article.title);
 
-			return {
-				source_name: article.source.name,
-				author: article.author,
-				title: article.title,
-				description: article.description,
-				url: article.url,
-				url_to_image: article.urlToImage,
-				published_at: article.publishedAt,
-				content: article.content,
-				embedding: embedding,
-			};
-		});
-
-		await storeArticles(articlesToStore);
-		return res
-			.status(200)
-			.json({ message: "Articles successfully stored in the database." });
+		res.status(200).json(article);
 	} catch (error) {
 		console.error(
-			"Error in fetching, embedding, or storing articles:",
+			`Error fetching article with id ${req.params.id}:`,
 			error.message
 		);
-		return res
+		res
 			.status(500)
-			.json({ message: "Error processing articles.", error: error.message });
+			.json({ message: "Error fetching article", error: error.message });
 	}
-}
+});
 
 module.exports = articles;

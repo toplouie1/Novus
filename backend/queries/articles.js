@@ -34,4 +34,51 @@ async function storeArticles(articles) {
 	}
 }
 
-module.exports = { storeArticles };
+async function getAllArticles(page = 1, limit = 20) {
+	try {
+		const offset = (page - 1) * limit;
+		const articles = await db.any(
+			`SELECT id, source_name, author, title, description, url, url_to_image, published_at, content
+       FROM articles
+       ORDER BY published_at DESC
+       LIMIT $1 OFFSET $2`,
+			[limit, offset]
+		);
+
+		const totalCount = await db.one(`SELECT COUNT(*) FROM articles`);
+
+		return {
+			articles,
+			pagination: {
+				total: parseInt(totalCount.count),
+				page,
+				limit,
+				pages: Math.ceil(parseInt(totalCount.count) / limit),
+			},
+		};
+	} catch (error) {
+		console.error("Error fetching articles:", error.message);
+		throw error;
+	}
+}
+
+async function getArticleById(id) {
+	try {
+		const article = await db.oneOrNone(
+			`SELECT id, source_name, author, title, description, url, url_to_image, published_at, content
+       FROM articles
+       WHERE id = $1`,
+			[id]
+		);
+		return article;
+	} catch (error) {
+		console.error(`Error fetching article with id ${id}:`, error.message);
+		throw error;
+	}
+}
+
+module.exports = {
+	storeArticles,
+	getAllArticles,
+	getArticleById,
+};
