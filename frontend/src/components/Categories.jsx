@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { categories } from "../utils/constants";
 import AiNovusButton from "./AiNovusButton";
+import { useLocation } from "react-router-dom";
 
 const Categories = ({ selectedCategory, onCategorySelect }) => {
 	const [isLoggedIn, setIsLoggedIn] = useState(
@@ -18,20 +19,23 @@ const Categories = ({ selectedCategory, onCategorySelect }) => {
 		};
 	}, []);
 
+	const location = useLocation();
+
 	return (
 		<div className="categories">
 			{isLoggedIn && <AiNovusButton />}
-			{categories.map((category) => (
-				<div
-					key={category.id}
-					className={`category ${
-						selectedCategory === category.id ? "active" : ""
-					}`}
-					onClick={() => onCategorySelect(category.id)}
-				>
-					{category.label}
-				</div>
-			))}
+			{location.pathname !== "/aiNovus" &&
+				categories.map((category) => (
+					<div
+						key={category.id}
+						className={`category ${
+							selectedCategory === category.id ? "active" : ""
+						}`}
+						onClick={() => onCategorySelect(category.id)}
+					>
+						{category.label}
+					</div>
+				))}
 		</div>
 	);
 };

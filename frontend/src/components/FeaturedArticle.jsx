@@ -11,7 +11,7 @@ const FeaturedArticle = ({ article, selectedCategory = "Ai Novus" }) => {
 			<div className="featured-image">
 				<div className="featured-tag">FEATURED</div>
 				<img
-					src={article.urlToImage || FALLBACK_IMAGE}
+					src={article.urlToImage || article.url_to_image || FALLBACK_IMAGE}
 					alt={article.title}
 					onError={(e) => {
 						if (e.target.src !== FALLBACK_IMAGE) {
