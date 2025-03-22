@@ -5,6 +5,7 @@ import Nav from "./components/Nav";
 import Categories from "./components/Categories";
 import Home from "./components/Home";
 import { useState, useCallback } from "react";
+import AiNovus from "./components/aiNovus";
 
 function App() {
 	const [selectedCategory, setSelectedCategory] = useState("general");
@@ -39,6 +40,7 @@ function App() {
 								/>
 							}
 						/>
+						<Route path="/aiNovus" element={<AiNovus />} />
 					</Routes>
 				</Router>
 			</div>

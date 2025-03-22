@@ -234,13 +234,14 @@
 	font-size: 0.9rem;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 880px) {
 	.categories {
 		top: 120px;
 		padding: 1rem;
 		justify-content: flex-start;
 		background-color: var(--bg-secondary);
 		box-shadow: 0 2px 4px var(--shadow-color);
+		justify-content: none;
 	}
 
 	.categories-container {

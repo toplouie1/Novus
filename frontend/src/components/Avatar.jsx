@@ -25,6 +25,10 @@ const AuthModal = () => {
 		!!localStorage.getItem("userId")
 	);
 
+	const notifyLoginStateChange = () => {
+		window.dispatchEvent(new Event("loginStateChanged"));
+	};
+
 	useEffect(() => {
 		const userId = localStorage.getItem("userId");
 		setIsLoggedIn(!!userId);
@@ -102,8 +106,13 @@ const AuthModal = () => {
 					console.error("Error parsing userInfo:", error);
 				}
 			}
+
+			notifyLoginStateChange();
 		} else {
 			await SignUp(formData);
+			if (localStorage.getItem("userId")) {
+				notifyLoginStateChange();
+			}
 		}
 		handleClose();
 	};
@@ -113,6 +122,7 @@ const AuthModal = () => {
 		localStorage.removeItem("userInfo");
 		setIsLoggedIn(false);
 		setAvatar("?");
+		notifyLoginStateChange();
 	};
 
 	return (

@@ -55,7 +55,7 @@ const Home = ({ selectedCategory, searchQuery }) => {
 	// Fetch news when category or search query changes
 	useEffect(() => {
 		fetchNews(true);
-	}, [selectedCategory, searchQuery]);
+	}, [selectedCategory, searchQuery, fetchNews]);
 
 	const handleLoadMore = useCallback(() => {
 		if (!state.loading && state.hasMore) {
