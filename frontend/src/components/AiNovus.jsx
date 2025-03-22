@@ -1,80 +1,62 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import FeaturedArticle from "./FeaturedArticle";
+import NewsGrid from "./NewsGrid";
+import Loading from "./Loading";
+import ErrorMessage from "./ErrorMessage";
+import Sidebar from "./Sidebar";
 
 const AiNovus = () => {
-	const [articles, setArticles] = useState([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState(null);
+	const [state, setState] = useState({
+		articles: [],
+		loading: true,
+		error: null,
+	});
+
 	const API_URL = import.meta.env.VITE_API_URL;
 
-	useEffect(() => {
-		const fetchArticles = async () => {
-			try {
-				const { data } = await axios.get(`${API_URL}/articles`);
-				setArticles(data.articles || data.result || []);
-			} catch {
-				setError("Failed to load articles. Please try again later.");
-			} finally {
-				setLoading(false);
-			}
-		};
-		fetchArticles();
+	const fetchArticles = useCallback(async () => {
+		try {
+			setState((prev) => ({ ...prev, error: null, loading: true }));
+			const { data } = await axios.get(`${API_URL}/articles`);
+			setState((prev) => ({
+				...prev,
+				articles: data.articles || data.result || [],
+				loading: false,
+			}));
+		} catch {
+			setState((prev) => ({
+				...prev,
+				error: "Failed to load articles. Please try again later.",
+				loading: false,
+			}));
+		}
 	}, [API_URL]);
 
-	if (loading)
-		return (
-			<div className="ai-novus-loading">
-				<p>Loading articles...</p>
-			</div>
-		);
-	if (error) return <div className="ai-novus-error">{error}</div>;
+	useEffect(() => {
+		fetchArticles();
+	}, [fetchArticles]);
+
+	console.log("news articles backend", state.articles);
 
 	return (
-		<div className="ai-novus-container">
-			<header>
-				<h1>AI Novus</h1>
-				<p>The Latest in Artificial Intelligence News</p>
-			</header>
-			{articles.length ? (
-				<div className="ai-novus-grid">
-					{articles.map(
-						({
-							id,
-							url_to_image,
-							source_name,
-							title,
-							author,
-							published_at,
-							description,
-							content,
-							url,
-						}) => (
-							<article key={id} className="ai-novus-card">
-								<div
-									className="ai-novus-image"
-									style={{ backgroundImage: `url(${url_to_image || ""})` }}
-								>
-									<div className="ai-novus-source-badge">{source_name}</div>
-								</div>
-								<div className="ai-novus-card-body">
-									<h2>{title}</h2>
-									<p>
-										{author || "Unknown Author"} -{" "}
-										{new Date(published_at).toLocaleDateString()}
-									</p>
-									<p>{description}</p>
-									<p>{content?.slice(0, 150) || ""}...</p>
-									<a href={url} target="_blank" rel="noopener noreferrer">
-										Read Full Article
-									</a>
-								</div>
-							</article>
-						)
-					)}
-				</div>
-			) : (
-				<p>No articles found.</p>
-			)}
+		<div className="news-layout">
+			<main className="main-content">
+				{state.error ? (
+					<ErrorMessage message={state.error} onRetry={fetchArticles} />
+				) : (
+					<>
+						{state.articles.length > 0 && (
+							<FeaturedArticle article={state.articles[0]} />
+						)}
+						{state.articles.length > 1 && (
+							<NewsGrid articles={state.articles.slice(1)} />
+						)}
+						{state.loading && <Loading />}
+					</>
+				)}
+			</main>
+			<Sidebar />
 		</div>
 	);
 };

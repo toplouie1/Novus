@@ -1,6 +1,5 @@
 import React from "react";
 import { useState, useEffect, useCallback } from "react";
-import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import FeaturedArticle from "./FeaturedArticle";
 import NewsGrid from "./NewsGrid";
 import Loading from "./Loading";
@@ -52,18 +51,9 @@ const Home = ({ selectedCategory, searchQuery }) => {
 		[selectedCategory, searchQuery, state.page]
 	);
 
-	// Fetch news when category or search query changes
 	useEffect(() => {
 		fetchNews(true);
 	}, [selectedCategory, searchQuery, fetchNews]);
-
-	const handleLoadMore = useCallback(() => {
-		if (!state.loading && state.hasMore) {
-			fetchNews(false);
-		}
-	}, [state.loading, state.hasMore, fetchNews]);
-
-	useInfiniteScroll(handleLoadMore, state.hasMore, state.loading);
 
 	return (
 		<div className="news-layout">

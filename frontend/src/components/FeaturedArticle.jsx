@@ -1,6 +1,6 @@
 import { FALLBACK_IMAGE } from "../utils/constants";
 
-const FeaturedArticle = ({ article, selectedCategory }) => {
+const FeaturedArticle = ({ article, selectedCategory = "Ai Novus" }) => {
 	if (!article) return null;
 
 	return (
@@ -35,11 +35,11 @@ const FeaturedArticle = ({ article, selectedCategory }) => {
 							src={`https://icons.duckduckgo.com/ip3/${
 								new URL(article.url).hostname
 							}.ico`}
-							alt={article.source.name}
+							alt={article.source?.name || article?.source_name}
 							className="source-icon"
 							loading="lazy"
 						/>
-						<span>{article.source.name}</span>
+						<span>{article.source?.name || article?.source_name}</span>
 					</div>
 					<button className="read-more">Read Full Story →</button>
 				</div>
