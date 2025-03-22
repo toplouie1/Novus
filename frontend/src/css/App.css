@@ -262,6 +262,18 @@
 	}
 }
 
+@media screen and (max-width: 840px) {
+	.categories {
+		top: 10px;
+		padding: 1rem;
+		justify-content: flex-start;
+	}
+	.categories-container {
+		padding: 0 0.5rem;
+		gap: 1rem;
+	}
+}
+
 @media screen and (max-width: 480px) {
 	.categories {
 		top: 110px;

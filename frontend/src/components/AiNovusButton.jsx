@@ -26,10 +26,10 @@ const AiNovusButton = () => {
 
 	const StyledButton = styled(Button)(() => ({
 		background: isDark
-			? "linear-gradient(45deg, #0d47a1, #311b92, #8e24aa, #6a1b9a)"
-			: "linear-gradient(45deg, #1565c0, #283593, #4527a0, #311b92)",
-		backgroundSize: "400% 400%",
-		animation: `${gradientAnimation} 15s ease infinite`,
+			? "linear-gradient(45deg, #0d47a1, #00bcd4, #1a237e, #ff9800, #e0f7fa, #0288d1, #01579b)"
+			: "linear-gradient(45deg, #1565c0, #4fc3f7, #283593, #ff9800, #ffffff, #29b6f6, #0277bd)",
+		backgroundSize: "600% 600%",
+		animation: `${gradientAnimation} 12s ease infinite`,
 		color: "#ffffff",
 		padding: "8px 16px",
 		fontSize: "14px",

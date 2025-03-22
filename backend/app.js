@@ -6,6 +6,7 @@ const session = require("express-session");
 const usersController = require("./controllers/usersController.js");
 const authController = require("./controllers/authController.js");
 const articleRoutes = require("./controllers/articleController.js");
+const userPreference = require("./controllers/userPreferenceContoller.js");
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use(passport.session());
 app.use("/auth", authController);
 app.use("/users", usersController);
 app.use("/articles", articleRoutes);
+app.use("/preferences", userPreference);
 
 app.get("/", (req, res) => {
 	res.send("Welcome To Novus");
