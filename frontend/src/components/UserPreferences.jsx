@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "../css/UserPreferences.css";
+import { updateUserCategories } from "../services/novusAi";
 
-const UserPreferences = ({ onGenerateInterests }) => {
+const UserPreferences = () => {
 	const [savedInterests, setSavedInterests] = useState([]);
 	const [customInterest, setCustomInterest] = useState("");
 	const [customColor, setCustomColor] = useState("blue");
@@ -37,6 +38,22 @@ const UserPreferences = ({ onGenerateInterests }) => {
 			setSavedInterests(JSON.parse(saved));
 		}
 	}, []);
+
+	const API_URL = import.meta.env.VITE_API_URL;
+	const userId = localStorage.getItem("userId");
+
+	const handleUpdateUserCategories = async () => {
+		try {
+			const updatedCategories = await updateUserCategories(
+				API_URL,
+				userId,
+				savedInterests
+			);
+			return updatedCategories;
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	const saveInterest = (interest) => {
 		setSavedInterests((prev) => {
@@ -81,8 +98,8 @@ const UserPreferences = ({ onGenerateInterests }) => {
 
 	const handleGenerate = () => {
 		const interestIds = savedInterests.map((interest) => interest.id);
-		if (onGenerateInterests) {
-			onGenerateInterests(interestIds);
+		if (handleUpdateUserCategories) {
+			handleUpdateUserCategories(interestIds);
 		}
 	};
 

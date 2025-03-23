@@ -41,18 +41,25 @@ const updateUserCategoriesAndEmbedding = async (
 	preferredCategories,
 	embedding
 ) => {
+	const query = `
+        INSERT INTO user_preferences (user_id, preferred_categories, embedding)
+        VALUES ($1, $2::TEXT[], $3)
+        ON CONFLICT (user_id) DO UPDATE
+        SET preferred_categories = EXCLUDED.preferred_categories,
+            embedding = EXCLUDED.embedding
+        RETURNING *;
+    `;
+
+	const formattedCategories = `{${preferredCategories.join(",")}}`;
+
+	const values = [userId, formattedCategories, embedding];
+
 	try {
-		const updatedPreferences = await db.one(
-			`UPDATE user_preferences
-             SET preferred_categories = $2,
-                 embedding = $3
-             WHERE user_id = $1
-             RETURNING *`,
-			[userId, preferredCategories, embedding]
-		);
-		return updatedPreferences;
+		const result = await db.query(query, values);
+		return result.rows;
 	} catch (error) {
-		return error;
+		console.error("Error updating user preferences:", error);
+		throw error;
 	}
 };
 
