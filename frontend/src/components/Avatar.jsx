@@ -11,16 +11,19 @@ import {
 import { SignUp } from "../auth/SignUp";
 import { logIn } from "../auth/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
+import useAuthPopup from "../auth/useAuthPopup";
+import { useNavigate } from "react-router-dom";
 
 const AuthModal = () => {
 	const [open, setOpen] = useState(false);
 	const [tabIndex, setTabIndex] = useState(0);
-	const [avatar, setAvatar] = useState("?");
 	const [formData, setFormData] = useState({
 		username: "",
 		email: "",
 		password: "",
 	});
+	const navigate = useNavigate();
+
 	const [isLoggedIn, setIsLoggedIn] = useState(
 		!!localStorage.getItem("userId")
 	);
@@ -28,44 +31,15 @@ const AuthModal = () => {
 	const notifyLoginStateChange = () => {
 		window.dispatchEvent(new Event("loginStateChanged"));
 	};
+	const { triggerPopup, AuthPopup } = useAuthPopup();
 
 	useEffect(() => {
 		const userId = localStorage.getItem("userId");
 		setIsLoggedIn(!!userId);
 
-		const storedUserInfo = localStorage.getItem("userInfo");
-		if (storedUserInfo) {
-			try {
-				const userInfo = JSON.parse(storedUserInfo);
-				if (userInfo?.username) {
-					setAvatar(userInfo.username[0]?.toUpperCase() || "?");
-				}
-			} catch (error) {
-				console.error("Error parsing userInfo:", error);
-				setAvatar("?");
-			}
-		} else {
-			setAvatar("?");
-		}
-
 		const handleStorageChange = () => {
 			const newUserId = localStorage.getItem("userId");
 			setIsLoggedIn(!!newUserId);
-
-			const newUserInfo = localStorage.getItem("userInfo");
-			if (newUserInfo) {
-				try {
-					const userInfo = JSON.parse(newUserInfo);
-					if (userInfo?.username) {
-						setAvatar(userInfo.username[0]?.toUpperCase() || "?");
-					}
-				} catch (error) {
-					console.error("Error parsing userInfo:", error);
-					setAvatar("?");
-				}
-			} else {
-				setAvatar("?");
-			}
 		};
 
 		window.addEventListener("storage", handleStorageChange);
@@ -94,25 +68,16 @@ const AuthModal = () => {
 
 			const userId = localStorage.getItem("userId");
 			setIsLoggedIn(!!userId);
-
-			const storedUserInfo = localStorage.getItem("userInfo");
-			if (storedUserInfo) {
-				try {
-					const userInfo = JSON.parse(storedUserInfo);
-					if (userInfo?.username) {
-						setAvatar(userInfo.username[0]?.toUpperCase() || "?");
-					}
-				} catch (error) {
-					console.error("Error parsing userInfo:", error);
-				}
-			}
-
+			triggerPopup("signin");
 			notifyLoginStateChange();
+			navigate("/");
 		} else {
 			await SignUp(formData);
 			if (localStorage.getItem("userId")) {
 				notifyLoginStateChange();
 			}
+			triggerPopup("signup");
+			navigate("/");
 		}
 		handleClose();
 	};
@@ -121,14 +86,21 @@ const AuthModal = () => {
 		localStorage.removeItem("userId");
 		localStorage.removeItem("userInfo");
 		setIsLoggedIn(false);
-		setAvatar("?");
 		notifyLoginStateChange();
+		triggerPopup("signout");
+		navigate("/");
 	};
 
 	return (
 		<>
+			<AuthPopup />
 			{isLoggedIn ? (
-				<LogoutIcon onClick={handleLogout} />
+				<LogoutIcon
+					sx={{
+						cursor: "pointer",
+					}}
+					onClick={handleLogout}
+				/>
 			) : (
 				<Avatar
 					onClick={handleOpen}
@@ -140,7 +112,7 @@ const AuthModal = () => {
 						height: 30,
 					}}
 				>
-					{isLoggedIn ? avatar : "?"}
+					{"?"}
 				</Avatar>
 			)}
 			<Modal open={open} onClose={handleClose}>

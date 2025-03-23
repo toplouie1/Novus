@@ -16,6 +16,15 @@ const Home = ({ selectedCategory, searchQuery }) => {
 		hasMore: true,
 	});
 
+	let validArticleWithImage = 0;
+	if (state.articles[0]?.urlToImage) {
+		validArticleWithImage = 0;
+	} else if (state.articles[state.articles.length - 1]?.urlToImage) {
+		validArticleWithImage = state.articles.length - 1;
+	} else {
+		validArticleWithImage = 5;
+	}
+
 	const fetchNews = useCallback(
 		async (reset = false) => {
 			try {
@@ -64,7 +73,7 @@ const Home = ({ selectedCategory, searchQuery }) => {
 					<>
 						{state.articles.length > 0 && (
 							<FeaturedArticle
-								article={state.articles[0]}
+								article={state.articles[validArticleWithImage]}
 								selectedCategory={selectedCategory}
 							/>
 						)}
