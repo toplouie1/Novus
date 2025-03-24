@@ -10,3 +10,11 @@ export const categories = [
 	{ id: "science", label: "Science" },
 	{ id: "health", label: "Health" },
 ];
+
+export const API_URL = import.meta.env.VITE_API_URL;
+
+export const getUserId = () => localStorage.getItem("userId");
+
+export const LOGO_SRC = "/novus-logo.svg";
+
+export const SEARCH_PLACEHOLDER = "Search news...";

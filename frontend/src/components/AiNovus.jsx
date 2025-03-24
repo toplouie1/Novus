@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { fetchArticles } from "../services/novusAi";
+import { fetchArticles, fetchRelevantArticles } from "../services/novusAi";
+import { API_URL, getUserId } from "../utils/constants";
 
 import FeaturedArticle from "./FeaturedArticle";
 import NewsGrid from "./NewsGrid";
@@ -15,8 +16,7 @@ const AiNovus = () => {
 		error: null,
 	});
 
-	const API_URL = import.meta.env.VITE_API_URL;
-	const userId = localStorage.getItem("userId");
+	const userId = getUserId();
 
 	const fetchArticlesData = useCallback(
 		async (preferences = []) => {
@@ -28,6 +28,7 @@ const AiNovus = () => {
 					const response = await fetch(
 						`${API_URL}/articles/${userId}/relevant`
 					);
+					// const response = await fetchRelevantArticles(API_URL,userId);
 					if (response.ok) {
 						articles = await response.json();
 					} else {
@@ -48,7 +49,7 @@ const AiNovus = () => {
 				}));
 			}
 		},
-		[API_URL]
+		[API_URL, userId]
 	);
 
 	useEffect(() => {
