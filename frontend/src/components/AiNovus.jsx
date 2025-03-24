@@ -16,39 +16,61 @@ const AiNovus = () => {
 	});
 
 	const API_URL = import.meta.env.VITE_API_URL;
+	const userId = localStorage.getItem("userId");
 
-	const fetchArticlesData = useCallback(async () => {
-		try {
-			setState((prev) => ({ ...prev, error: null, loading: true }));
-			const articles = await fetchArticles(API_URL);
+	const fetchArticlesData = useCallback(
+		async (preferences = []) => {
+			try {
+				setState((prev) => ({ ...prev, error: null, loading: true }));
+				let articles = await fetchArticles(API_URL);
 
-			setState((prev) => ({
-				...prev,
-				articles,
-				loading: false,
-			}));
-		} catch (error) {
-			setState((prev) => ({
-				...prev,
-				error: "Failed to load articles. Please try again later.",
-				loading: false,
-			}));
-		}
-	}, [API_URL]);
+				if (preferences.length > 0) {
+					const response = await fetch(
+						`${API_URL}/articles/${userId}/relevant`
+					);
+					if (response.ok) {
+						articles = await response.json();
+					} else {
+						throw new Error("Failed to fetch relevant articles");
+					}
+				}
+
+				setState((prev) => ({
+					...prev,
+					articles,
+					loading: false,
+				}));
+			} catch (error) {
+				setState((prev) => ({
+					...prev,
+					error: "Failed to load articles. Please try again later.",
+					loading: false,
+				}));
+			}
+		},
+		[API_URL]
+	);
 
 	useEffect(() => {
 		fetchArticlesData();
 	}, [fetchArticlesData]);
 
+	const handleUpdateUserCategories = async (preferences) => {
+		fetchArticlesData(preferences);
+	};
+
 	return (
 		<div className="news-layout">
 			<main className="main-content">
 				<div className="mb-6">
-					<UserPreferences />
+					<UserPreferences onUpdateCategories={handleUpdateUserCategories} />
 				</div>
 
 				{state.error ? (
-					<ErrorMessage message={state.error} onRetry={fetchArticlesData} />
+					<ErrorMessage
+						message={state.error}
+						onRetry={() => fetchArticlesData()}
+					/>
 				) : (
 					<>
 						{state.articles.length > 0 && (

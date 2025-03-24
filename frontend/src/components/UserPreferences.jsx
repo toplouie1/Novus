@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../css/UserPreferences.css";
 import { updateUserCategories } from "../services/novusAi";
 
-const UserPreferences = () => {
+const UserPreferences = ({ onUpdateCategories }) => {
 	const [savedInterests, setSavedInterests] = useState([]);
 	const [customInterest, setCustomInterest] = useState("");
 	const [customColor, setCustomColor] = useState("blue");
@@ -45,17 +45,8 @@ const UserPreferences = () => {
 	const handleUpdateUserCategories = async () => {
 		try {
 			await updateUserCategories(API_URL, userId, savedInterests);
-
-			const response = await fetch(`${API_URL}/articles/${userId}/relevant`);
-
-			if (!response.ok) {
-				throw new Error("Failed to fetch relevant articles");
-			}
-
-			const relevantArticles = await response.json();
-			console.log("Relevant articles:", relevantArticles);
-
-			return relevantArticles;
+			const interestName = savedInterests.map((category) => category.name);
+			onUpdateCategories(interestName);
 		} catch (error) {
 			console.error("Error handling update:", error);
 		}
@@ -92,21 +83,14 @@ const UserPreferences = () => {
 			isCustom: true,
 		};
 
-		// Add to available interests
 		setAvailableInterests((prev) => [...prev, newInterest]);
-
-		// Also save it directly
 		saveInterest(newInterest);
-
-		// Reset input field
 		setCustomInterest("");
 	};
 
 	const handleGenerate = () => {
 		const interestIds = savedInterests.map((interest) => interest.id);
-		if (handleUpdateUserCategories) {
-			handleUpdateUserCategories(interestIds);
-		}
+		handleUpdateUserCategories(interestIds);
 	};
 
 	const getColorClass = (colorName) => {

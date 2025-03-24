@@ -12,6 +12,7 @@ const NewsCard = ({ article }) => {
 		source,
 		source_name,
 		url_to_image,
+		content,
 	} = article;
 
 	return (
@@ -36,6 +37,7 @@ const NewsCard = ({ article }) => {
 				</div>
 				<h3>{truncateText(title, 100)}</h3>
 				<p>{truncateText(description, 150)}</p>
+				<p>{truncateText(content, 200)}</p>
 				<div className="news-footer">
 					<SourceIcon url={url} name={source?.name || source_name} />
 				</div>
