@@ -44,14 +44,20 @@ const UserPreferences = () => {
 
 	const handleUpdateUserCategories = async () => {
 		try {
-			const updatedCategories = await updateUserCategories(
-				API_URL,
-				userId,
-				savedInterests
-			);
-			return updatedCategories;
+			await updateUserCategories(API_URL, userId, savedInterests);
+
+			const response = await fetch(`${API_URL}/articles/${userId}/relevant`);
+
+			if (!response.ok) {
+				throw new Error("Failed to fetch relevant articles");
+			}
+
+			const relevantArticles = await response.json();
+			console.log("Relevant articles:", relevantArticles);
+
+			return relevantArticles;
 		} catch (error) {
-			console.log(error);
+			console.error("Error handling update:", error);
 		}
 	};
 

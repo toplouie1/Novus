@@ -77,8 +77,32 @@ async function getArticleById(id) {
 	}
 }
 
+async function getRelevantArticles(id, topK = 20) {
+	try {
+		const articles = await db.any(
+			`SELECT a.id, a.source_name, a.author, a.title, a.description, a.url, 
+					a.url_to_image, a.published_at, a.content, 
+					1 - (up.embedding <=> a.embedding) AS similarity
+			FROM articles a
+			JOIN user_preferences up ON up.user_id = $1
+			WHERE a.embedding IS NOT NULL AND up.embedding IS NOT NULL
+			ORDER BY up.embedding <=> a.embedding
+			LIMIT $2`,
+			[id, topK]
+		);
+		return articles;
+	} catch (error) {
+		console.error(
+			`Error fetching relevant articles for user ${id}:`,
+			error.message
+		);
+		throw error;
+	}
+}
+
 module.exports = {
 	storeArticles,
 	getAllArticles,
 	getArticleById,
+	getRelevantArticles,
 };
