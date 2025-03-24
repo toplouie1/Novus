@@ -10,7 +10,7 @@ export const updateUserCategories = async (
 	userId,
 	preferredCategories
 ) => {
-	const categoryIds = preferredCategories.map((category) => category.id);
+	const categoryIds = preferredCategories.map((category) => category.name);
 	const { data } = await axios.patch(
 		`${API_URL}/preferences/${userId}/categories`,
 		{ preferredCategories: categoryIds }
