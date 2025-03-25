@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { fetchArticles, fetchRelevantArticles } from "../services/novusAi";
+import { fetchArticles } from "../services/novusAi";
 import { API_URL, getUserId } from "../utils/constants";
 
 import FeaturedArticle from "./FeaturedArticle";
@@ -28,7 +28,6 @@ const AiNovus = () => {
 					const response = await fetch(
 						`${API_URL}/articles/${userId}/relevant`
 					);
-					// const response = await fetchRelevantArticles(API_URL,userId);
 					if (response.ok) {
 						articles = await response.json();
 					} else {

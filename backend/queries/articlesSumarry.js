@@ -8,12 +8,7 @@ const trimContent = (content, maxLength = 4000) => {
 };
 
 const getSummaryAndFactCheck = async (article) => {
-	const {
-		title = "Unknown Title",
-		author = "Unknown Author",
-		source_name = "Unknown Source",
-		content,
-	} = article;
+	const { title, author, source_name, content } = article;
 
 	if (!content) {
 		throw new Error("Content is required for summarization.");
