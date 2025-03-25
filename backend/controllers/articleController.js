@@ -4,7 +4,7 @@ const {
 	getArticleById,
 	getRelevantArticles,
 } = require("../queries/articles.js");
-const { getSummaryAndFactCheck } = require("../queries/articlesSumarry.js");
+const { getSummaryAndFactCheck } = require("../queries/articlesSummary.js");
 
 const articles = express.Router();
 

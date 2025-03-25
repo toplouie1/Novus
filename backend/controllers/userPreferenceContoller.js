@@ -74,11 +74,6 @@ userPreferences.patch("/:userId/categories", async (req, res) => {
 				.json({ message: "preferredCategories must be a non-empty array" });
 		}
 
-		console.log(
-			`Received categories update for user ${userId}:`,
-			preferredCategories
-		);
-
 		const embedding = await generateEmbedding(preferredCategories.join(" "));
 
 		const updatedPreferences = await updateUserCategoriesAndEmbedding(

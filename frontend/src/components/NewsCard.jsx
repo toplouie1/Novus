@@ -1,6 +1,7 @@
 import { FALLBACK_IMAGE } from "../utils/constants";
 import { truncateText } from "../utils/helpers";
 import SourceIcon from "./shared/SourceIcon";
+import SummarizeButton from "./SummarizeButton";
 
 const NewsCard = ({ article }) => {
 	const {
@@ -41,6 +42,7 @@ const NewsCard = ({ article }) => {
 				<div className="news-footer">
 					<SourceIcon url={url} name={source?.name || source_name} />
 				</div>
+				<SummarizeButton article={article} />
 			</div>
 		</div>
 	);

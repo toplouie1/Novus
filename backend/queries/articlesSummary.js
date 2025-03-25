@@ -44,14 +44,32 @@ const getSummaryAndFactCheck = async (article) => {
 
 	try {
 		const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
 		const result = await model.generateContent(prompt);
 		const text = await result.response.text();
 
-		return text || "No summary available.";
+		const jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/);
+		const jsonString = jsonMatch ? jsonMatch[1] : text;
+
+		let parsedResponse;
+		try {
+			parsedResponse = JSON.parse(jsonString);
+		} catch (parseError) {
+			console.error("Failed to parse JSON:", parseError);
+			return { error: "Invalid JSON format received from AI response." };
+		}
+
+		if (
+			!parsedResponse.summary ||
+			parsedResponse.rating === undefined ||
+			!parsedResponse.justification
+		) {
+			return { error: "Incomplete AI response received." };
+		}
+
+		return parsedResponse;
 	} catch (error) {
 		console.error("Error calling Gemini API:", error.message);
-		return "Error processing the request.";
+		return { error: "Error processing the request." };
 	}
 };
 

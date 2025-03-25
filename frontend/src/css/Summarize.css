@@ -1,0 +1,41 @@
+.summarize-container {
+	display: flex;
+	flex-direction: column;
+	align-items: start;
+	gap: 10px;
+}
+
+.summarize-button {
+	padding: 8px 12px;
+	background: #007bff;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.summarize-button:disabled {
+	background: #aaa;
+	cursor: not-allowed;
+}
+
+.summary-box {
+	margin-top: 10px;
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	background: #f9f9f9;
+	width: 100%;
+	max-width: 400px;
+}
+
+.rating {
+	font-size: 18px;
+	color: gold;
+}
+
+.error {
+	color: red;
+	font-weight: bold;
+}
