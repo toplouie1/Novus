@@ -4,6 +4,7 @@ const {
 	getArticleById,
 	getRelevantArticles,
 } = require("../queries/articles.js");
+const { getSummaryAndFactCheck } = require("../queries/articlesSumarry.js");
 
 const articles = express.Router();
 
@@ -66,5 +67,24 @@ articles.get("/:id/relevant", async (req, res) => {
 		});
 	}
 });
+
+articles.post("/summarize", async (req, res) => {
+	try {
+		const { content, title, author, source_name } = req.body;
+
+		if (!content) {
+			return res.status(400).json({ error: "Article content is required." });
+		}
+
+		const article = { title, author, source_name, content };
+		const result = await getSummaryAndFactCheck(article);
+		res.json({ summary: result });
+	} catch (error) {
+		console.error("Error summarizing article:", error);
+		res.status(500).json({ error: "Internal server error" });
+	}
+});
+
+module.exports = articles;
 
 module.exports = articles;
