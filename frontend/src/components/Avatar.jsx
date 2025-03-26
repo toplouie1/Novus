@@ -8,7 +8,7 @@ import {
 	Tabs,
 	Tab,
 } from "@mui/material";
-import { SignUp } from "../auth/SignUp";
+import { SignUp } from "../auth/Signup";
 import { logIn } from "../auth/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
 import useAuthPopup from "../auth/useAuthPopup";
