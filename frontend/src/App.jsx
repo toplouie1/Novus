@@ -5,7 +5,7 @@ import Nav from "./components/Nav";
 import Categories from "./components/Categories";
 import Home from "./components/Home";
 import { useState, useCallback } from "react";
-import AiNovus from "./components/aiNovus";
+import AiNovus from "./components/AiNovus";
 
 function App() {
 	const [selectedCategory, setSelectedCategory] = useState("general");
