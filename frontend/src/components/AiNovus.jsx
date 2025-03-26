@@ -40,7 +40,7 @@ const AiNovus = () => {
 					articles,
 					loading: false,
 				}));
-			} catch (error) {
+			} catch {
 				setState((prev) => ({
 					...prev,
 					error: "Failed to load articles. Please try again later.",
@@ -48,7 +48,7 @@ const AiNovus = () => {
 				}));
 			}
 		},
-		[API_URL, userId]
+		[userId]
 	);
 
 	useEffect(() => {
