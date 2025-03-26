@@ -17,7 +17,7 @@ const NewsCard = ({ article }) => {
 	} = article;
 
 	return (
-		<div className="news-card" onClick={() => window.open(url, "_blank")}>
+		<div className="news-card">
 			<div className="card-image">
 				<img
 					src={urlToImage || url_to_image || FALLBACK_IMAGE}
@@ -29,7 +29,15 @@ const NewsCard = ({ article }) => {
 					}}
 				/>
 				<div className="image-overlay">
-					<span className="read-indicator">Read Article</span>
+					<span
+						className="read-indicator"
+						onClick={(e) => {
+							e.stopPropagation();
+							window.open(url, "_blank");
+						}}
+					>
+						Read Article
+					</span>
 				</div>
 			</div>
 			<div className="news-content">
@@ -41,8 +49,8 @@ const NewsCard = ({ article }) => {
 				<p>{truncateText(content, 200)}</p>
 				<div className="news-footer">
 					<SourceIcon url={url} name={source?.name || source_name} />
+					<SummarizeButton article={article} />
 				</div>
-				<SummarizeButton article={article} />
 			</div>
 		</div>
 	);

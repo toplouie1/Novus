@@ -1,74 +1,98 @@
 import { useState } from "react";
-import axios from "axios";
-import "../css/Summarize.css";
+import { summarizeArticle } from "../services/novusAi";
+import { Modal, Box, Button, Typography } from "@mui/material";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const style = {
+	position: "absolute",
+	top: "50%",
+	left: "50%",
+	transform: "translate(-50%, -50%)",
+	width: 400,
+	bgcolor: "background.paper",
+	boxShadow: 24,
+	p: 4,
+	borderRadius: 2,
+};
+
+const ChildModal = ({ justification }) => {
+	const [open, setOpen] = useState(false);
+
+	const handleOpen = () => setOpen(true);
+	const handleClose = () => setOpen(false);
+
+	return (
+		<>
+			<Button onClick={handleOpen} sx={{ mt: 2 }}>
+				Why this rating?
+			</Button>
+			<Modal
+				open={open}
+				onClose={handleClose}
+				aria-labelledby="child-modal-title"
+			>
+				<Box sx={{ ...style, width: 350 }}>
+					<Typography id="child-modal-title" variant="h6">
+						Justification
+					</Typography>
+					<Typography variant="body1">{justification}</Typography>
+					<Button onClick={handleClose} sx={{ mt: 2 }}>
+						Close
+					</Button>
+				</Box>
+			</Modal>
+		</>
+	);
+};
 
 const SummarizeButton = ({ article }) => {
 	const [summaryData, setSummaryData] = useState(null);
 	const [loading, setLoading] = useState(false);
+	const [open, setOpen] = useState(false);
 
 	const handleSummarize = async () => {
 		setLoading(true);
-		try {
-			const requestData = {
-				content: article.content,
-				title: article.title,
-				author: article.author,
-				source_name: article.source_name,
-			};
-			const response = await axios.post(
-				`${API_URL}/articles/summarize`,
-				requestData
-			);
-
-			if (response.data && response.data.summary) {
-				setSummaryData(response.data.summary);
-			} else {
-				setSummaryData({ error: "Invalid response format." });
-			}
-		} catch (error) {
-			console.error("Error during summarization:", error);
-			setSummaryData({ error: "Failed to summarize. Try again." });
-		}
+		const data = await summarizeArticle(article);
+		setSummaryData(data);
 		setLoading(false);
+		setOpen(true);
 	};
+
+	const handleClose = () => setOpen(false);
+
 	const summaryText = summaryData?.summary || "No summary available.";
 	const rating = summaryData?.rating || 0;
 	const justification =
 		summaryData?.justification || "No justification available.";
 
 	return (
-		<div className="summarize-container">
-			<button
-				onClick={handleSummarize}
-				disabled={loading}
-				className="summarize-button"
-			>
+		<>
+			<Button onClick={handleSummarize} disabled={loading} variant="contained">
 				{loading ? "Summarizing..." : "Summarize"}
-			</button>
+			</Button>
 
-			{summaryData && (
-				<div className="summary-box">
-					{summaryData.error ? (
-						<p className="error">{summaryData.error}</p>
-					) : (
-						<>
-							<p>
-								<strong>Summary:</strong> {summaryText}
-							</p>
-							<p className="rating">
-								<strong>Rating:</strong>{" "}
-								{"★".repeat(rating) + "☆".repeat(5 - rating)}
-							</p>
-							<p>
-								<strong>Why:</strong> {justification}
-							</p>
-						</>
-					)}
-				</div>
-			)}
-		</div>
+			<Modal
+				open={open}
+				onClose={handleClose}
+				aria-labelledby="parent-modal-title"
+			>
+				<Box sx={style}>
+					<Typography id="parent-modal-title" variant="h6">
+						Article Summary
+					</Typography>
+					<Typography variant="body1">
+						<strong>Summary:</strong> {summaryText}
+					</Typography>
+					<Typography variant="body1" sx={{ mt: 2 }}>
+						<strong>Rating:</strong>{" "}
+						{"★".repeat(rating) + "☆".repeat(5 - rating)}
+					</Typography>
+					<ChildModal justification={justification} />
+					<Button onClick={handleClose} sx={{ mt: 2 }}>
+						Close
+					</Button>
+				</Box>
+			</Modal>
+		</>
 	);
 };
 
