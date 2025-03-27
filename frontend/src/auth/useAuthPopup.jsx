@@ -22,8 +22,8 @@ const useAuthPopup = () => {
 				setSeverity("info");
 				break;
 			default:
-				msg = "Something happened!";
-				setSeverity("warning");
+				msg = "Invalid login or signup attempt. Please try again.";
+				setSeverity("error");
 		}
 
 		setMessage(msg);

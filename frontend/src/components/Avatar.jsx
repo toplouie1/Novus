@@ -63,23 +63,39 @@ const AuthModal = () => {
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-		if (tabIndex === 0) {
-			await logIn(formData);
+		let response;
 
-			const userId = localStorage.getItem("userId");
-			setIsLoggedIn(!!userId);
-			triggerPopup("signin");
-			notifyLoginStateChange();
-			navigate("/");
-		} else {
-			await SignUp(formData);
-			if (localStorage.getItem("userId")) {
+		if (tabIndex === 0) {
+			response = await logIn(formData);
+			if (response.success) {
+				const userId = localStorage.getItem("userId");
+				setIsLoggedIn(!!userId);
+				triggerPopup("signin");
 				notifyLoginStateChange();
+				navigate("/");
+				handleClose();
+			} else {
+				triggerPopup(
+					"error",
+					response.error || "Login failed. Please try again."
+				);
 			}
-			triggerPopup("signup");
-			navigate("/");
+		} else {
+			response = await SignUp(formData);
+			if (response.success) {
+				if (localStorage.getItem("userId")) {
+					notifyLoginStateChange();
+				}
+				triggerPopup("signup");
+				navigate("/");
+				handleClose();
+			} else {
+				triggerPopup(
+					"error",
+					response.error || "Signup failed. Please try again."
+				);
+			}
 		}
-		handleClose();
 	};
 
 	const handleLogout = () => {

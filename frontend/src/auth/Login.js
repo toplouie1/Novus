@@ -9,18 +9,17 @@ export const logIn = async (formData) => {
 		const userId = userInfo.id;
 
 		if (!isNaN(userId)) {
-			console.log(userId + " is a number");
-			console.log(userInfo + " is a userInfo");
 			localStorage.setItem("userId", `${userId}`);
 			localStorage.setItem("userInfo", JSON.stringify(userInfo));
+			return { success: true };
 		} else {
-			console.log("userId passed in is not valid");
-			return null;
+			console.log("Invalid userId received.");
+			return { success: false };
 		}
 	} catch (c) {
 		if (c.response && c.response.data) {
-			console.log("server error", c.response.data);
+			console.log("Login error:", c.response.data);
 		}
-		return null;
+		return { success: false, error: c.response?.data };
 	}
 };

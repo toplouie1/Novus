@@ -35,13 +35,13 @@ const Sidebar = () => {
 
 				setLocationInfo(locationData);
 
-				const localQuery = locationData.city;
+				const localQuery = locationData.region;
 				const localData = await searchNews(localQuery);
 
 				setLocalNews(localData.articles.slice(0, 4));
 
 				const [combatData, cryptoData, fashionData] = await Promise.all([
-					searchNews("combat"),
+					searchNews("sports"),
 					searchNews("crypto"),
 					searchNews("fashion"),
 				]);

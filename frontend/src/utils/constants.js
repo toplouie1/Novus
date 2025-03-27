@@ -5,7 +5,7 @@ export const categories = [
 	{ id: "general", label: "Home" },
 	{ id: "business", label: "Business" },
 	{ id: "technology", label: "Technology" },
-	{ id: "entertainment", label: "Entertainment" },
+	{ id: "Actor", label: "Actor" },
 	{ id: "sports", label: "Sports" },
 	{ id: "science", label: "Science" },
 	{ id: "health", label: "Health" },
