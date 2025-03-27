@@ -3,6 +3,7 @@ const {
 	getAllArticles,
 	getArticleById,
 	getRelevantArticles,
+	getArticlesBySearch,
 } = require("../queries/articles.js");
 const { getSummaryAndFactCheck } = require("../queries/articlesSummary.js");
 
@@ -14,6 +15,24 @@ articles.get("/", async (req, res) => {
 		const limit = parseInt(req.query.limit) || 20;
 
 		const result = await getAllArticles(page, limit);
+		res.status(200).json(result);
+	} catch (error) {
+		console.error("Error fetching articles:", error.message);
+		res
+			.status(500)
+			.json({ message: "Error fetching articles", error: error.message });
+	}
+});
+
+articles.get("/search", async (req, res) => {
+	try {
+		const { searchQuery, limit = 20 } = req.query;
+
+		if (!searchQuery) {
+			return res.status(400).json({ message: "Search query is required." });
+		}
+		const result = await getArticlesBySearch(searchQuery, limit);
+
 		res.status(200).json(result);
 	} catch (error) {
 		console.error("Error fetching articles:", error.message);
@@ -84,7 +103,5 @@ articles.post("/summarize", async (req, res) => {
 		res.status(500).json({ error: "Internal server error" });
 	}
 });
-
-module.exports = articles;
 
 module.exports = articles;

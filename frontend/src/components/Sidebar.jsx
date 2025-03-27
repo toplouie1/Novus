@@ -36,14 +36,14 @@ const Sidebar = () => {
 				setLocationInfo(locationData);
 
 				const localQuery = locationData.city;
-				const localData = await searchNews(localQuery, 4);
+				const localData = await searchNews(localQuery);
 
 				setLocalNews(localData.articles.slice(0, 4));
 
 				const [combatData, cryptoData, fashionData] = await Promise.all([
-					searchNews("UFC MMA boxing", 1),
-					searchNews("cryptocurrency bitcoin", 1),
-					searchNews("fashion style trends", 1),
+					searchNews("combat"),
+					searchNews("crypto"),
+					searchNews("fashion"),
 				]);
 
 				setCombatNews(combatData.articles.slice(0, 3));
@@ -80,7 +80,7 @@ const Sidebar = () => {
 						>
 							<div className="sidebar-item-image">
 								<img
-									src={item.urlToImage || FALLBACK_IMAGE}
+									src={item.url_to_image || FALLBACK_IMAGE}
 									alt={item.title}
 									onError={(e) => {
 										if (e.target.src !== FALLBACK_IMAGE) {
@@ -98,11 +98,11 @@ const Sidebar = () => {
 											src={`https://icons.duckduckgo.com/ip3/${
 												new URL(item.url).hostname
 											}.ico`}
-											alt={item.source.name}
+											alt={item.source_name}
 											loading="lazy"
 											onError={(e) => (e.target.style.display = "none")}
 										/>
-										<span className="source-name">{item.source.name}</span>
+										<span className="source-name">{item.source_name}</span>
 									</div>
 									<span className="item-date">{item.formattedDate}</span>
 								</div>

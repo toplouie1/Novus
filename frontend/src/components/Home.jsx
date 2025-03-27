@@ -1,25 +1,28 @@
-import React from "react";
-import { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import FeaturedArticle from "./FeaturedArticle";
 import NewsGrid from "./NewsGrid";
 import Loading from "./Loading";
 import ErrorMessage from "./ErrorMessage";
-import { getTopNews, getNewsByCategory, searchNews } from "../services/newsApi";
+import { getNewsByCategory, searchNews } from "../services/newsApi";
+import { fetchArticles } from "../services/novusAi";
 import Sidebar from "./Sidebar";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Home = ({ selectedCategory, searchQuery }) => {
 	const [state, setState] = useState({
 		articles: [],
 		loading: true,
 		error: null,
-		page: 1,
 		hasMore: true,
 	});
 
 	let validArticleWithImage = 0;
-	if (state.articles[0]?.urlToImage) {
+	if (state.articles.length > 0 && state.articles[0]?.urlToImage) {
 		validArticleWithImage = 0;
-	} else if (state.articles[state.articles.length - 1]?.urlToImage) {
+	} else if (
+		state.articles.length > 0 &&
+		state.articles[state.articles.length - 1]?.urlToImage
+	) {
 		validArticleWithImage = state.articles.length - 1;
 	} else {
 		validArticleWithImage = 5;
@@ -29,26 +32,23 @@ const Home = ({ selectedCategory, searchQuery }) => {
 		async (reset = false) => {
 			try {
 				setState((prev) => ({ ...prev, error: null, loading: true }));
-
-				const currentPage = reset ? 1 : state.page;
 				let data;
 
 				if (searchQuery) {
-					data = await searchNews(searchQuery, currentPage);
+					data = await searchNews(searchQuery);
 				} else {
 					data =
 						selectedCategory === "general"
-							? await getTopNews(currentPage)
-							: await getNewsByCategory(selectedCategory, currentPage);
+							? { articles: await fetchArticles(API_URL) }
+							: await getNewsByCategory(selectedCategory);
 				}
 
 				setState((prev) => ({
 					...prev,
 					articles: reset
-						? data.articles
-						: [...prev.articles, ...data.articles],
-					hasMore: data.articles.length > 0,
-					page: reset ? 2 : prev.page + 1,
+						? data.articles || []
+						: [...prev.articles, ...(data.articles || [])],
+					hasMore: data?.articles?.length > 0,
 					loading: false,
 				}));
 
@@ -57,7 +57,7 @@ const Home = ({ selectedCategory, searchQuery }) => {
 				setState((prev) => ({ ...prev, error: err.message, loading: false }));
 			}
 		},
-		[selectedCategory, searchQuery, state.page]
+		[selectedCategory, searchQuery]
 	);
 
 	useEffect(() => {

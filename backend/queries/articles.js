@@ -100,9 +100,29 @@ async function getRelevantArticles(id, topK = 20) {
 	}
 }
 
+async function getArticlesBySearch(searchQuery, limit = 20) {
+	try {
+		const articles = await db.any(
+			`SELECT id, source_name, author, title, description, url, url_to_image, published_at, content
+		FROM articles
+		WHERE LOWER(title) LIKE LOWER($1) 
+		   OR LOWER(description) LIKE LOWER($1)
+		   OR LOWER(content) LIKE LOWER($1)
+		ORDER BY published_at DESC
+		LIMIT $2`,
+			[`%${searchQuery}%`, limit]
+		);
+		return articles;
+	} catch (error) {
+		console.error("Error fetching articles by search query:", error.message);
+		throw error;
+	}
+}
+
 module.exports = {
 	storeArticles,
 	getAllArticles,
 	getArticleById,
 	getRelevantArticles,
+	getArticlesBySearch,
 };

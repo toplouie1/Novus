@@ -1,15 +1,7 @@
-const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
-const BASE_URL = import.meta.env.VITE_NEWS_API_BASE_URL;
-const DEFAULT_COUNTRY = import.meta.env.VITE_DEFAULT_COUNTRY || "us";
-const ARTICLES_PER_PAGE = import.meta.env.VITE_ARTICLES_PER_PAGE || 20;
+import axios from "axios";
 
-const handleResponse = async (response) => {
-	if (!response.ok) {
-		const error = await response.json();
-		throw new Error(error.message || "Failed to fetch news");
-	}
-	return response.json();
-};
+const ARTICLES_PER_PAGE = import.meta.env.VITE_ARTICLES_PER_PAGE || 20;
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const formatDate = (dateString) => {
 	return new Date(dateString).toLocaleDateString("en-US", {
@@ -21,37 +13,49 @@ const formatDate = (dateString) => {
 	});
 };
 
-export const getTopNews = async (page = 1) => {
+const handleResponse = (response) => {
+	return response.data;
+};
+
+export const getTopNews = async () => {
 	try {
-		const response = await fetch(
-			`${BASE_URL}/top-headlines?country=${DEFAULT_COUNTRY}&page=${page}&pageSize=${ARTICLES_PER_PAGE}&apiKey=${API_KEY}`
-		);
-		const data = await handleResponse(response);
+		const response = await axios.get(`${API_BASE_URL}/articles/search`, {
+			params: {
+				searchQuery: "headlines",
+				limit: ARTICLES_PER_PAGE,
+			},
+		});
+		const data = handleResponse(response);
+
 		return {
-			articles: data.articles.map((article) => ({
+			articles: data.map((article) => ({
 				...article,
-				formattedDate: formatDate(article.publishedAt),
+				formattedDate: formatDate(article.published_at),
 			})),
-			totalResults: data.totalResults,
+			totalResults: data.length,
 		};
 	} catch (error) {
-		console.error("Error fetching news:", error);
+		console.error("Error fetching top news:", error);
 		throw error;
 	}
 };
 
-export const getNewsByCategory = async (category, page = 1) => {
+export const getNewsByCategory = async (category) => {
 	try {
-		const response = await fetch(
-			`${BASE_URL}/top-headlines?country=${DEFAULT_COUNTRY}&category=${category}&page=${page}&pageSize=${ARTICLES_PER_PAGE}&apiKey=${API_KEY}`
-		);
-		const data = await handleResponse(response);
+		const response = await axios.get(`${API_BASE_URL}/articles/search`, {
+			params: {
+				searchQuery: category,
+				limit: ARTICLES_PER_PAGE,
+			},
+		});
+		const data = handleResponse(response);
+
 		return {
-			articles: data.articles.map((article) => ({
+			articles: data.map((article) => ({
 				...article,
-				formattedDate: formatDate(article.publishedAt),
+				formattedDate: formatDate(article.published_at),
 			})),
-			totalResults: data.totalResults,
+			totalResults: data.length,
 		};
 	} catch (error) {
 		console.error("Error fetching category news:", error);
@@ -59,18 +63,22 @@ export const getNewsByCategory = async (category, page = 1) => {
 	}
 };
 
-export const searchNews = async (query, page = 1) => {
+export const searchNews = async (query) => {
 	try {
-		const response = await fetch(
-			`${BASE_URL}/everything?q=${query}&sortBy=relevancy&page=${page}&pageSize=${ARTICLES_PER_PAGE}&apiKey=${API_KEY}`
-		);
-		const data = await handleResponse(response);
+		const response = await axios.get(`${API_BASE_URL}/articles/search`, {
+			params: {
+				searchQuery: query,
+				limit: ARTICLES_PER_PAGE,
+			},
+		});
+		const data = handleResponse(response);
+
 		return {
-			articles: data.articles.map((article) => ({
+			articles: data.map((article) => ({
 				...article,
-				formattedDate: formatDate(article.publishedAt),
+				formattedDate: formatDate(article.published_at),
 			})),
-			totalResults: data.totalResults,
+			totalResults: data.length,
 		};
 	} catch (error) {
 		console.error("Error searching news:", error);
