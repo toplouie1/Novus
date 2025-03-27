@@ -701,7 +701,7 @@
 }
 
 [data-theme="light"] .read-indicator:hover {
-	background: var(--shadow-color);
+	background: var(--border-color);
 	color: var(--text-primary);
 }
 
