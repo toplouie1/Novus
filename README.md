@@ -30,7 +30,7 @@ Novus is a modern, AI-powered news aggregation platform that delivers personaliz
 - Node.js
 - Express.js
 - PostgreSQL with pgvector for vector-based search
-- OpenAI Embeddings for semantic search and summarization
+- Gemini Embeddings for semantic search and summarization
 - RESTful API architecture
 
 ## Usage
