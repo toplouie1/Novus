@@ -35,7 +35,7 @@ Novus is a modern, AI-powered news aggregation platform that delivers personaliz
 
 ## Usage
 
-1. Open `https://novus-news.netlify.app` in your browser.
+1. Open [Novus News](https://novus-news.netlify.app) in your browser.
 2. Register or log in to access personalized news.
 3. Search for articles using the intelligent search bar.
 4. Click on any article to read a summary and AI-generated credibility insights.
