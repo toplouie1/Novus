@@ -4,6 +4,12 @@
 
 Novus is a modern, AI-powered news aggregation platform that delivers personalized news experiences through advanced recommendation systems and semantic search capabilities. Our platform gathers news from around the world while using AI-driven insights and retrieval-augmented generation (RAG) to provide a clearer, more engaging perspective on the stories that matter.
 
+### test user
+
+username: mockuser
+
+password: mockuser
+
 ## Features
 
 - **Intelligent News Aggregation**: Curates news from multiple trusted sources.
